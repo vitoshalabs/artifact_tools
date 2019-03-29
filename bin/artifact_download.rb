@@ -27,6 +27,10 @@ def parse
       options[:verify] = v
     end
 
+    opts.on("-u USER", "--user=USER", "Access server with this username") do |u|
+      options[:user] = u
+    end
+
     opts.on("-h", "--help", "Show this message") do
       puts opts
       exit
@@ -45,7 +49,7 @@ end
 def main
   opts = parse
   config = process_config(opts[:config_file])
-  c = ArtifactStorage::Client.new(config: config.config)
+  c = ArtifactStorage::Client.new(config: config.config, user: opts[:user])
   c.fetch(dest: opts[:dest_dir], verify: opts[:verify])
 end
 
