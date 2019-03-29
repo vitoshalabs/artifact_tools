@@ -9,11 +9,11 @@ module ArtifactStorage
 
   class Client
     # @param config [Hash] Configuration
-    def initialize(config:)
+    def initialize(config:, user:nil)
       required_fields = ['server', 'dir', 'files']
       raise "Invalid config" unless config.keys.all? { |k| required_fields.include?(k) }
       @config = config
-      @ssh = Net::SSH.start(@config['server'], nil, non_interactive: true)
+      @ssh = Net::SSH.start(@config['server'], user, non_interactive: true)
     end
 
     def fetch(file:nil, dest:nil, verify: false)
