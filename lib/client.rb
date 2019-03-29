@@ -1,8 +1,8 @@
 require 'net/ssh'
 require 'net/scp'
 require 'fileutils'
-require 'byebug'
 require 'digest'
+require 'pry-byebug'
 
 module ArtifactStorage
   class HashMismatchError < RuntimeError
