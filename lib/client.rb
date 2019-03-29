@@ -31,6 +31,10 @@ module ArtifactStorage
 
     # dir?
     def put(file:)
+      hash = hash_file(file)
+      remote = compose_remote(file, hash)
+      ensure_remote_path_exists(remote)
+      @ssh.scp.upload!(file, remote)
     end
 
     private
@@ -43,6 +47,12 @@ module ArtifactStorage
       dirname = File.dirname(local)
       return if File.directory?(dirname)
       FileUtils.mkdir_p(dirname)
+    end
+
+    def ensure_remote_path_exists(remote)
+      dirname = File.dirname(remote)
+      return if File.directory?(dirname)
+      @ssh.exec!("mkdir -p #{dirname}")
     end
 
     def compose_local(dest, file)
