@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative '../lib/client'
+require_relative '../lib/config_file'
 require 'optparse'
 require 'yaml'
 
@@ -35,8 +36,8 @@ def parse
   options
 end
 
-def process_config(config)
-  YAML.load_file(config)
+def process_config(config_file)
+  ArtifactStorage::ConfigFile.from_file(config_file)
   # TODO: error check
 end
 
@@ -44,7 +45,7 @@ end
 def main
   opts = parse
   config = process_config(opts[:config_file])
-  c = ArtifactStorage::Client.new(config: config)
+  c = ArtifactStorage::Client.new(config: config.config)
   c.fetch(dest: opts[:dest_dir], verify: opts[:verify])
 end
 
