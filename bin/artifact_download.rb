@@ -45,7 +45,7 @@ def main
   opts = parse
   config = process_config(opts[:config_file])
   c = ArtifactStorage::Client.new(config: config)
-  c.fetch(dest: opts[:dest_dir])
+  c.fetch(dest: opts[:dest_dir], verify: opts[:verify])
 end
 
 main
