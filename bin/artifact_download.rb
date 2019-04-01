@@ -22,8 +22,7 @@ def parse
       options[:dest_dir] = d
     end
 
-    # TODO: pass default
-    opts.on("-v", "--[no-]verify", "Verify hash on downloaded files") do |v|
+    opts.on("-v", "--[no-]verify", TrueClass, "Verify hash on downloaded files. Default: #{options[:verify]}.") do |v|
       options[:verify] = v
     end
 
