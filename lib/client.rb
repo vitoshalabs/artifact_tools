@@ -12,7 +12,7 @@ module ArtifactStorage
     # @param user [String] User name to connect to server with, overrides ARTIFACT_STORAGE_USER and config['user']
     def initialize(config:, user:nil)
       required_fields = ['server', 'dir', 'files']
-      raise "Invalid config" unless config.keys.all? { |k| required_fields.include?(k) }
+      raise "Invalid config" unless required_fields.all? { |k| config.keys.include?(k) }
       @config = config
       user ||= ENV['ARTIFACT_STORAGE_USER'] || @config['user']
       @ssh = Net::SSH.start(@config['server'], user, non_interactive: true)
