@@ -13,12 +13,12 @@ def parse
   OptionParser.new do |opts|
     opts.banner = "Usage: #{__FILE__} [options]"
 
-    opts.on("-c FILE", "--configuration=FILE", "Pass configuration file.") do |f|
-      options[:config_file] = f
+    opts.on("-c FILE", "--configuration=FILE", "Pass configuration file.") do |v|
+      options[:config_file] = v
     end
 
-    opts.on("-a", "--append", "Append uploaded files to configuration file, if missing.") do |f|
-      options[:config_file] = f
+    opts.on("-a", "--append", "Append uploaded files to configuration file, if missing. Default: #{options[:append]}.") do |v|
+      options[:append] = v
     end
 
     opts.on("-h", "--help", "Show this message") do
