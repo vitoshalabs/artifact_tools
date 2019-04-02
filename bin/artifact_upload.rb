@@ -36,6 +36,14 @@ def process_config(config_file)
   ArtifactStorage::ConfigFile.from_file(config_file)
 end
 
+def relative_to_config(file, config_file)
+  file = File.expand_path(file)
+  config_file = File.expand_path(config_file)
+  config_file_dirname = File.dirname(config_file)
+  return nil unless file.start_with?(config_file_dirname)
+  file[(config_file_dirname.length + 1)..]
+end
+
 # TODO: check for clashes of files, do hash checks?
 def main
   opts = parse
@@ -43,7 +51,10 @@ def main
   c = ArtifactStorage::Client.new(config: config.config)
   opts[:files].each do |file|
     c.put(file: file)
-    config.append_file(file:file) if opts[:append]
+    next unless opts[:append]
+    rel_path = relative_to_config(file, opts[:config_file])
+    raise "#{file} is not relative to config: #{opts[:config_file]}" unless rel_path
+    config.append_file(file:file, store_path:rel_path)
   end
   config.save(opts[:config_file])
 end
