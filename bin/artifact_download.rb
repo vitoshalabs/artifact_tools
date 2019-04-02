@@ -30,6 +30,10 @@ def parse
       options[:user] = u
     end
 
+    opts.on("-m REGEXP", "--match=REGEXP", Regexp, "Download only file which match regular expression") do |v|
+      options[:match] = v
+    end
+
     opts.on("-h", "--help", "Show this message") do
       puts opts
       exit
@@ -49,7 +53,7 @@ def main
   opts = parse
   config = process_config(opts[:config_file])
   c = ArtifactStorage::Client.new(config: config.config, user: opts[:user])
-  c.fetch(dest: opts[:dest_dir], verify: opts[:verify])
+  c.fetch(dest: opts[:dest_dir], verify: opts[:verify], match: opts[:match])
 end
 
 main
