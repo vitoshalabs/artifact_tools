@@ -20,10 +20,11 @@ module ArtifactStorage
       @ssh = Net::SSH.start(@config['server'], user, non_interactive: true)
     end
 
-    def fetch(file:nil, dest:nil, verify: false)
+    def fetch(file:nil, dest:nil, match:nil, verify: false)
       files = @config['files'].keys
       files = file if file
       files.each do |entry|
+        next if match and not entry.match?(match)
         entry_hash = @config['files'][entry]['hash']
         remote = compose_remote(entry, entry_hash)
         local = compose_local(dest, entry)
