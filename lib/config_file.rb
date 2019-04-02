@@ -1,7 +1,9 @@
 require 'yaml'
+require_relative 'hasher'
 
 module ArtifactStorage
   class ConfigFile
+    include ArtifactStorage::Hasher
     attr_reader :config
 
     def initialize(config:)

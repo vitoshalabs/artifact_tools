@@ -2,12 +2,16 @@ require 'net/ssh'
 require 'net/scp'
 require 'fileutils'
 require 'digest'
+# TODO: Remove relative when gem
+require_relative 'hasher'
 
 module ArtifactStorage
   class HashMismatchError < RuntimeError
   end
 
   class Client
+    include ArtifactStorage::Hasher
+
     # @param config [Hash] Configuration
     # @param user [String] User name to connect to server with, overrides ARTIFACT_STORAGE_USER and config['user']
     def initialize(config:, user:nil)
@@ -32,7 +36,7 @@ module ArtifactStorage
 
     # dir?
     def put(file:)
-      hash = hash_file(file)
+      hash = file_hash(file)
       remote = compose_remote(file, hash)
       ensure_remote_path_exists(remote)
       @ssh.scp.upload!(file, remote)
@@ -63,18 +67,9 @@ module ArtifactStorage
       local
     end
 
-    def hash_algo
-      # TODO: decide on used algorithm
-      Digest::SHA1
-    end
-
-    def hash_file(path)
-      hash_algo.file(path)
-    end
-
     def verify(expected_hash, path)
-      actual_hash = hash_file(path)
-      if expected_hash != actual_hash.hexdigest
+      actual_hash = file_hash(path)
+      if expected_hash != actual_hash
         raise HashMismatchError, "File #{path} has hash: #{actual_hash} while it should have: #{expected_hash}"
       end
     end
