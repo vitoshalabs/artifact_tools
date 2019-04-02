@@ -34,7 +34,6 @@ end
 
 def process_config(config_file)
   ArtifactStorage::ConfigFile.from_file(config_file)
-  # TODO: error check
 end
 
 # TODO: check for clashes of files, do hash checks?
