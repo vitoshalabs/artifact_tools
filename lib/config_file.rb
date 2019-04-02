@@ -31,9 +31,15 @@ module ArtifactStorage
       # Leave error propagation as this is development tool
     end
 
-    def append_file(file:, **opts)
-      @config['files'][file] = opts
-      @config['files'][file]['hash'] = file_hash(file)
+    # Append file to configuration.
+    #
+    # @param file [String] Path to the file to store in the configuration
+    # @param store_path [String] Use this path as key in the configuration. Optional, if omitted uses file
+    # @param opts [Hash] Additional fields to store for the file
+    def append_file(file:, store_path:nil, **opts)
+      store_path = file unless store_path
+      @config['files'][store_path] = opts
+      @config['files'][store_path]['hash'] = file_hash(file)
     end
   end
 end
