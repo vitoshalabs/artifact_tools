@@ -23,7 +23,8 @@ module ArtifactStorage
     end
 
     def append_file(file:, **opts)
-      @config['files']
+      @config['files'][file] = opts
+      @config['files'][file]['hash'] = file_hash(file)
     end
   end
 end
