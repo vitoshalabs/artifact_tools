@@ -5,9 +5,10 @@ module ArtifactStorage
   class ConfigFile
     include ArtifactStorage::Hasher
     attr_reader :config
+    REQUIRED_FIELDS = ['server', 'dir', 'files']
 
     def initialize(config:)
-      # TODO: check for server and dir
+      raise "Invalid config" unless REQUIRED_FIELDS.all? { |k| config.keys.include?(k) }
       @config = config
     end
 
