@@ -43,7 +43,9 @@ def main
   c = ArtifactStorage::Client.new(config: config.config)
   opts[:files].each do |file|
     c.put(file: file)
+    config.append_file(file:file) if opts[:append]
   end
+  config.save(opts[:config_file])
 end
 
 main
