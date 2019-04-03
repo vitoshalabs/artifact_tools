@@ -41,7 +41,7 @@ def relative_to_config(file, config_file)
   config_file = File.expand_path(config_file)
   config_file_dirname = File.dirname(config_file)
   return nil unless file.start_with?(config_file_dirname)
-  file[(config_file_dirname.length + 1)..]
+  file[(config_file_dirname.length + 1)..-1]
 end
 
 # TODO: check for clashes of files, do hash checks?
