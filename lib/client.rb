@@ -2,8 +2,7 @@ require 'net/ssh'
 require 'net/scp'
 require 'fileutils'
 require 'digest'
-# TODO: Remove relative when gem
-require_relative 'hasher'
+require 'hasher'
 
 module ArtifactStorage
   class HashMismatchError < RuntimeError

@@ -1,5 +1,5 @@
 require 'yaml'
-require_relative 'hasher'
+require 'hasher'
 
 module ArtifactStorage
   class ConfigFile
