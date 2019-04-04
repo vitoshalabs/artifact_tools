@@ -1,9 +1,9 @@
 require 'yaml'
 require 'artifact_tools/hasher'
 
-module ArtifactStorage
+module ArtifactTools
   class ConfigFile
-    include ArtifactStorage::Hasher
+    include ArtifactTools::Hasher
     attr_reader :config
     REQUIRED_FIELDS = ['server', 'dir', 'files']
 

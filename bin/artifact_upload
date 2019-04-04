@@ -33,7 +33,7 @@ def parse
 end
 
 def process_config(config_file)
-  ArtifactStorage::ConfigFile.from_file(config_file)
+  ArtifactTools::ConfigFile.from_file(config_file)
 end
 
 def relative_to_config(file, config_file)
@@ -48,7 +48,7 @@ end
 def main
   opts = parse
   config = process_config(opts[:config_file])
-  c = ArtifactStorage::Client.new(config: config.config)
+  c = ArtifactTools::Client.new(config: config.config)
   opts[:files].each do |file|
     c.put(file: file)
     next unless opts[:append]

@@ -44,7 +44,7 @@ def parse
 end
 
 def process_config(config_file)
-  ArtifactStorage::ConfigFile.from_file(config_file)
+  ArtifactTools::ConfigFile.from_file(config_file)
   # TODO: error check
 end
 
@@ -52,7 +52,7 @@ end
 def main
   opts = parse
   config = process_config(opts[:config_file])
-  c = ArtifactStorage::Client.new(config: config.config, user: opts[:user])
+  c = ArtifactTools::Client.new(config: config.config, user: opts[:user])
   c.fetch(dest: opts[:dest_dir], verify: opts[:verify], match: opts[:match])
 end
 

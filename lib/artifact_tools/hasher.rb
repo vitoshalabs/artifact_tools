@@ -1,4 +1,4 @@
-module ArtifactStorage
+module ArtifactTools
   module Hasher
     def file_hash(path)
       hash_algo.file(path).hexdigest

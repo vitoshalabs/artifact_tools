@@ -4,12 +4,12 @@ require 'fileutils'
 require 'digest'
 require 'artifact_tools/hasher'
 
-module ArtifactStorage
+module ArtifactTools
   class HashMismatchError < RuntimeError
   end
 
   class Client
-    include ArtifactStorage::Hasher
+    include ArtifactTools::Hasher
 
     # @param config [Hash] Configuration
     # @param user [String] User name to connect to server with, overrides ARTIFACT_STORAGE_USER and config['user']
