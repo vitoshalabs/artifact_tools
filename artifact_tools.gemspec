@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.authors = ["VL"]
-  s.name = 'artifact-tools'
+  s.name = 'artifact_tools'
   s.version = '0.0.1'
   s.summary = 'Provides tools to manage repository artifacts.'
   s.files = Dir['lib/**'] + Dir['bin/*']
