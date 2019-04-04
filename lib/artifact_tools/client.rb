@@ -2,7 +2,7 @@ require 'net/ssh'
 require 'net/scp'
 require 'fileutils'
 require 'digest'
-require 'hasher'
+require 'artifact_tools/hasher'
 
 module ArtifactStorage
   class HashMismatchError < RuntimeError

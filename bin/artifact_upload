@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/client'
-require_relative '../lib/config_file'
+require 'artifact_tools/client'
+require 'artifact_tools/config_file'
 require 'optparse'
 require 'yaml'
 
