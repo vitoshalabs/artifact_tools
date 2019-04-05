@@ -1,0 +1,69 @@
+require 'artifact_tools/client'
+require 'artifact_tools/config_file'
+require 'optparse'
+require 'yaml'
+
+module ArtifactTools
+  class Downloader
+
+    # Download requested files using command line arguments provided
+    #
+    # @param arguments [Array(String)] Command line options to parse and use.
+    #   Hint: pass ARGV
+    #
+    # @todo Reorganize the code to call class method parse on the arguments and
+    #   pass options to initialize. It will allow more flexibility of the use
+    #   and testing of Downloader.
+    def initialize(arguments)
+      opts = parse(arguments)
+      config = load_config(opts[:config_file])
+      c = ArtifactTools::Client.new(config: config.config, user: opts[:user])
+      c.fetch(dest: opts[:dest_dir], verify: opts[:verify], match: opts[:match])
+    end
+
+    private
+
+    def parse(arguments)
+      options = {
+        verify: true,
+        dest_dir: '.',
+      }
+      arguments << '-h' if arguments.empty?
+      OptionParser.new do |opts|
+        opts.banner = "Usage: #{__FILE__} [options]"
+
+        opts.on("-c FILE", "--configuration=FILE", "Pass configuration file") do |f|
+          options[:config_file] = f
+        end
+
+        opts.on("-d DIR", "--destination=DIR", "Store files in directory") do |d|
+          options[:dest_dir] = d
+        end
+
+        opts.on("-v", "--[no-]verify", TrueClass, "Verify hash on downloaded files. Default: #{options[:verify]}.") do |v|
+          options[:verify] = v
+        end
+
+        opts.on("-u USER", "--user=USER", "Access server with this username") do |u|
+          options[:user] = u
+        end
+
+        opts.on("-m REGEXP", "--match=REGEXP", Regexp, "Download only file which match regular expression") do |v|
+          options[:match] = v
+        end
+
+        opts.on("-h", "--help", "Show this message") do
+          puts opts
+          exit
+        end
+      end.parse!(arguments)
+
+      options
+    end
+
+    def load_config(config_file)
+      ArtifactTools::ConfigFile.from_file(config_file)
+      # TODO: error check
+    end
+  end
+end
