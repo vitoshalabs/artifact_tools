@@ -2,4 +2,4 @@
 
 require 'artifact_tools/downloader'
 
-ArtifactTools::Downloader.new(ARGV)
+ArtifactTools::Downloader.new(ArtifactTools::Downloader.parse(ARGV))

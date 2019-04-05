@@ -5,31 +5,31 @@ require 'yaml'
 
 module ArtifactTools
   class Uploader
-    # Upload requested files using command line arguments provided
+    # Upload requested files
+    #
+    # @param config_file [String] Path to configuration file
+    # @param user [String] User to use for download connection
+    # @param append [Boolean] Whether to append files to config file
+    # @param files [Array(String)] Paths to files to upload
+    def initialize(config_file:, user:nil, files:, append:false)
+      # TODO: check for clashes of files, do hash checks?
+      config = load_config(config_file)
+      c = ArtifactTools::Client.new(config: config.config)
+      files.each do |file|
+        c.put(file: file)
+        next unless append
+        rel_path = relative_to_config(file, config_file)
+        raise "#{file} is not relative to config: #{config_file}" unless rel_path
+        config.append_file(file:file, store_path:rel_path)
+      end
+      config.save(config_file)
+    end
+
+    # Parse command line options to options suitable to Downloader.new
     #
     # @param arguments [Array(String)] Command line options to parse and use.
     #   Hint: pass ARGV
-    #
-    # @todo Reorganize the code to call class method parse on the arguments and
-    #   pass options to initialize. It will allow more flexibility of the use
-    #   of Uploader.
-    def initialize(arguments)
-      # TODO: check for clashes of files, do hash checks?
-      opts = parse(arguments)
-      config = load_config(opts[:config_file])
-      c = ArtifactTools::Client.new(config: config.config)
-      opts[:files].each do |file|
-        c.put(file: file)
-        next unless opts[:append]
-        rel_path = relative_to_config(file, opts[:config_file])
-        raise "#{file} is not relative to config: #{opts[:config_file]}" unless rel_path
-        config.append_file(file:file, store_path:rel_path)
-      end
-      config.save(opts[:config_file])
-    end
-
-    private
-    def parse(arguments)
+    def self.parse(arguments)
       options = {
         append: false,
       }
@@ -56,6 +56,7 @@ module ArtifactTools
       options
     end
 
+    private
     def load_config(config_file)
       ArtifactTools::ConfigFile.from_file(config_file)
     end

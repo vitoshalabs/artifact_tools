@@ -6,24 +6,24 @@ require 'yaml'
 module ArtifactTools
   class Downloader
 
-    # Download requested files using command line arguments provided
+    # Download requested files
+    #
+    # @param config_file [String] Path to configuration file
+    # @param user [String] User to use for download connection
+    # @param dest_dir [String] Where to download artifacts to
+    # @param verify [Boolean] Whether to verify checksums after download.
+    # @param match [Regexp] Whether to verify checksums after download.
+    def initialize(config_file:, dest_dir:, user:nil, verify: true, match:nil)
+      config = load_config(config_file)
+      c = ArtifactTools::Client.new(config: config.config, user: user)
+      c.fetch(dest: dest_dir, verify: verify, match: match)
+    end
+
+    # Parse command line options to options suitable to Downloader.new
     #
     # @param arguments [Array(String)] Command line options to parse and use.
     #   Hint: pass ARGV
-    #
-    # @todo Reorganize the code to call class method parse on the arguments and
-    #   pass options to initialize. It will allow more flexibility of the use
-    #   and testing of Downloader.
-    def initialize(arguments)
-      opts = parse(arguments)
-      config = load_config(opts[:config_file])
-      c = ArtifactTools::Client.new(config: config.config, user: opts[:user])
-      c.fetch(dest: opts[:dest_dir], verify: opts[:verify], match: opts[:match])
-    end
-
-    private
-
-    def parse(arguments)
+    def self.parse(arguments)
       options = {
         verify: true,
         dest_dir: '.',
@@ -60,6 +60,8 @@ module ArtifactTools
 
       options
     end
+
+    private
 
     def load_config(config_file)
       ArtifactTools::ConfigFile.from_file(config_file)
