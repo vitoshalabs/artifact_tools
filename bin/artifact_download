@@ -5,12 +5,12 @@ require 'artifact_tools/config_file'
 require 'optparse'
 require 'yaml'
 
-def parse
+def parse(arguments)
   options = {
     verify: true,
     dest_dir: '.',
   }
-  ARGV << '-h' if ARGV.empty?
+  arguments << '-h' if arguments.empty?
   OptionParser.new do |opts|
     opts.banner = "Usage: #{__FILE__} [options]"
 
@@ -38,7 +38,7 @@ def parse
       puts opts
       exit
     end
-  end.parse!
+  end.parse!(arguments)
 
   options
 end
@@ -50,7 +50,7 @@ end
 
 # TODO: check for clashes of files, do hash checks?
 def main
-  opts = parse
+  opts = parse(ARGV)
   config = process_config(opts[:config_file])
   c = ArtifactTools::Client.new(config: config.config, user: opts[:user])
   c.fetch(dest: opts[:dest_dir], verify: opts[:verify], match: opts[:match])
