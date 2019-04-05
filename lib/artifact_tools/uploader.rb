@@ -4,6 +4,8 @@ require 'optparse'
 require 'yaml'
 
 module ArtifactTools
+  # Uploader allows the user to upload files to a store specified by
+  # {ConfigFile}.
   class Uploader
     # Upload requested files
     #

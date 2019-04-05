@@ -4,9 +4,11 @@ require 'optparse'
 require 'yaml'
 
 module ArtifactTools
+  # Downloader allows the user to fetch files from a store specified. All this
+  # information is provided by {ConfigFile}.
   class Downloader
 
-    # Download requested files
+    # Downloads requested files
     #
     # @param config_file [String] Path to configuration file
     # @param user [String] User to use for download connection

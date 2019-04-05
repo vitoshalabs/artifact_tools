@@ -1,5 +1,8 @@
 module ArtifactTools
   module Hasher
+    # Calculate hash of a file
+    #
+    # @param path [String] Path to file to hash.
     def file_hash(path)
       hash_algo.file(path).hexdigest
     end

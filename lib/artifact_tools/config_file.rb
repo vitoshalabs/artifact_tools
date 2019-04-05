@@ -2,6 +2,10 @@ require 'yaml'
 require 'artifact_tools/hasher'
 
 module ArtifactTools
+  # Store configuration information about artifacts and where they are stored.
+  #
+  # It has to contain at least the fields from {REQUIRED_FIELDS} while allowing
+  # any key/value which has a value for the user.
   class ConfigFile
     include ArtifactTools::Hasher
     attr_reader :config
