@@ -5,8 +5,16 @@ def sha1sum(path)
   `sha1sum #{path}`.split[0]
 end
 
+def random_bytes
+  if Random.respond_to?(:bytes)
+    lambda { |x| Random.bytes(x) }
+  else
+    lambda { |x| Random.new.bytes(x) }
+  end
+end
+
 def fill_file_random_data(file)
-  bytes = Random.bytes(Random.rand(1000..10000))
+  bytes = random_bytes[Random.rand(1000..10000)]
   file.write(bytes)
 end
 
