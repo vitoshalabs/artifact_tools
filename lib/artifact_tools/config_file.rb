@@ -40,6 +40,9 @@ module ArtifactTools
     # @param file [String] Path to the file to store in the configuration
     # @param store_path [String] Use this path as key in the configuration. Optional, if omitted uses file
     # @param opts [Hash] Additional fields to store for the file
+    #
+    # @note If file exists in the config with key *store_path* then its
+    #   properties will be merged, where new ones will have priority.
     def append_file(file:, store_path:nil, **opts)
       store_path = file unless store_path
       @config['files'][store_path] = opts
