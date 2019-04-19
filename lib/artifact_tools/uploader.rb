@@ -23,6 +23,7 @@ module ArtifactTools
         rel_path = relative_to_config(file, config_file)
         raise "#{file} is not relative to config: #{config_file}" unless rel_path
         config.append_file(file:file, store_path:rel_path)
+        puts "#{config.config['files'][file]['hash']} #{file}"
       end
       config.save(config_file)
     end
