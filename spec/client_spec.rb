@@ -15,12 +15,18 @@ class Session
     @scp = MockSCP.new
   end
 
+  def exec!(cmd)
+  end
+
   attr_reader :scp
 end
 
 #TODO: make sure the remote path is correct
 class MockSCP
   def download!(remote, local)
+  end
+
+  def upload!(local, remote)
   end
 end
 
@@ -144,6 +150,27 @@ describe ArtifactTools::Client do
         dest = 'there'
         mock_file_hashes(files: { "#{dest}/#{file}" => info }, expect_calls: true)
         expect { subject.fetch(file: file, verify: true, dest: dest) }.not_to raise_error
+      end
+    end
+  end
+
+  describe '.put' do
+    subject { ArtifactTools::Client.new(config: config) }
+    let(:file) { TEST_FILES.keys.first }
+
+    context 'with empty files configuration' do
+      let(:config) { { 'files' => { } } }
+
+      it "succeeds" do
+        expect { subject.put(file: file)}.not_to raise_error
+      end
+    end
+
+    context 'with files in configuration' do
+      let(:config) { { 'files' => TEST_FILES } }
+
+      it "uploads the file" do
+        expect { subject.put(file: file) }.not_to raise_error
       end
     end
   end
