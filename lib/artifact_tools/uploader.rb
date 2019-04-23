@@ -7,6 +7,7 @@ module ArtifactTools
   # Uploader allows the user to upload files to a store specified by
   # {ConfigFile}.
   class Uploader
+    include ArtifactTools::Hasher
     # Upload requested files
     #
     # @param config_file [String] Path to configuration file
@@ -19,11 +20,12 @@ module ArtifactTools
       c = ArtifactTools::Client.new(config: config.config)
       files.each do |file|
         c.put(file: file)
+        hash = file_hash(file)
+        puts "#{hash} #{file}"
         next unless append
         rel_path = relative_to_config(file, config_file)
         raise "#{file} is not relative to config: #{config_file}" unless rel_path
-        config.append_file(file:file, store_path:rel_path)
-        puts "#{config.config['files'][file]['hash']} #{file}"
+        config.append_file(file:file, store_path:rel_path, hash: hash)
       end
       config.save(config_file)
     end
