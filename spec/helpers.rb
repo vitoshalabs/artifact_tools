@@ -99,6 +99,7 @@ end
 class FakeClient
   def initialize(config:, user:nil)
     @@put_files = []
+    @@fetch_args = []
     @config = config
   end
 
@@ -106,8 +107,16 @@ class FakeClient
     @@put_files << file
   end
 
+  def fetch(**opts)
+    @@fetch_args << opts
+  end
+
   def self.put_files
     @@put_files
+  end
+
+  def self.fetch_args
+    @@fetch_args
   end
 end
 
