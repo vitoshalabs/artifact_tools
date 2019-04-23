@@ -99,4 +99,7 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+  config.expect_with :rspec do |c|
+    c.max_formatted_output_length = nil
+  end
 end
