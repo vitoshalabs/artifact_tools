@@ -60,9 +60,8 @@ def mock_file_hashes(files: TEST_FILES, expect_calls: false)
 end
 
 class FakeConfig
-  @@from_file_calls = 0
-
   def self.config=(config)
+    @@from_file_calls = 0
     @@config = config
   end
 
