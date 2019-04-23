@@ -21,12 +21,15 @@ class Session
   attr_reader :scp
 end
 
-#TODO: make sure the remote path is correct
 class MockSCP
+  attr_reader :download_last_remote, :upload_last_remote
+
   def download!(remote, local)
+    @download_last_remote = remote
   end
 
   def upload!(local, remote)
+    @upload_last_remote = remote
   end
 end
 
@@ -34,13 +37,13 @@ module MockSSH
   @start_params = {}
 
   class << self
-    attr_reader :start_params
+    attr_reader :start_params, :session
 
     def start(host, user, options)
       @start_params[:host] = host
       @start_params[:user] = user
       @start_params[:options] = options
-      Session.new(host, user, options)
+      @session = Session.new(host, user, options)
     end
   end
 end
@@ -152,6 +155,22 @@ describe ArtifactTools::Client do
         expect { subject.fetch(file: file, verify: true, dest: dest) }.not_to raise_error
       end
     end
+
+    context 'uses correct remote path' do
+      let(:remote_dir) { '/hello/there' }
+      let(:config) do
+        {
+          'dir' => remote_dir,
+          'files' => TEST_FILES,
+        }
+      end
+
+      it do
+        mock_file_hashes(expect_calls: true)
+        expect { subject.fetch(verify: true) }.not_to raise_error
+        expect(MockSSH.session.scp.download_last_remote).to start_with(remote_dir)
+      end
+    end
   end
 
   describe '.put' do
@@ -171,6 +190,16 @@ describe ArtifactTools::Client do
 
       it "uploads the file" do
         expect { subject.put(file: file) }.not_to raise_error
+      end
+    end
+
+    context 'uses correct remote path' do
+      let(:remote_dir) { '/hello/there' }
+      let(:config) { { 'dir' => remote_dir } }
+
+      it do
+        expect { subject.put(file:TEST_FILES.keys.first) }.not_to raise_error
+        expect(MockSSH.session.scp.upload_last_remote).to start_with(remote_dir)
       end
     end
   end
