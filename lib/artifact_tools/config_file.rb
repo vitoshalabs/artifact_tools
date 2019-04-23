@@ -45,8 +45,12 @@ module ArtifactTools
     #   properties will be merged, where new ones will have priority.
     def append_file(file:, store_path:nil, **opts)
       store_path = file unless store_path
+
+      # Convert symbols to String
+      opts = opts.map { |k,v| [k.to_s, v] }.to_h
+
       @config['files'][store_path] = opts
-      @config['files'][store_path]['hash'] = file_hash(file)
+      @config['files'][store_path]['hash'] ||= file_hash(file)
     end
   end
 end
