@@ -18,9 +18,9 @@ class Session
   attr_reader :scp
 end
 
+#TODO: make sure the remote path is correct
 class MockSCP
   def download!(remote, local)
-    raise "Invalid test case" unless TEST_FILES.keys.include?(local)
   end
 end
 
@@ -43,11 +43,12 @@ class GetHashAlgo
   extend ArtifactTools::Hasher
 end
 
-def mock_file_hashes
+def mock_file_hashes(files: TEST_FILES, expect_calls: false)
   hash = GetHashAlgo.send(:hash_algo)
   file_hash = Struct.new(:hexdigest)
-  TEST_FILES.each do |file, props|
+  files.each do |file, props|
     allow(hash).to receive(:file).with(file).and_return(file_hash.new(props['hash']))
+    expect(hash).to receive(:file).with(file).once if expect_calls
   end
 end
 
@@ -118,17 +119,31 @@ describe ArtifactTools::Client do
       end
     end
 
-    context 'with one file in configuration' do
+    context 'with files in configuration' do
       let(:config) do
-        { 'files' => { TEST_FILES.keys.first => TEST_FILES.values.first } }
+        { 'files' => TEST_FILES }
       end
 
-      it "downloads the file" do
+      it "downloads the files" do
         expect { subject.fetch }.not_to raise_error
       end
 
       it "downloads and verifies the file" do
+        mock_file_hashes(expect_calls: true)
         expect { subject.fetch(verify: true) }.not_to raise_error
+      end
+
+      it "downloads only specified file" do
+        file, info = TEST_FILES.first
+        mock_file_hashes(files: { file => info }, expect_calls: true)
+        expect { subject.fetch(file: file, verify: true) }.not_to raise_error
+      end
+
+      it "downloads to specified destination" do
+        file, info = TEST_FILES.first
+        dest = 'there'
+        mock_file_hashes(files: { "#{dest}/#{file}" => info }, expect_calls: true)
+        expect { subject.fetch(file: file, verify: true, dest: dest) }.not_to raise_error
       end
     end
   end
