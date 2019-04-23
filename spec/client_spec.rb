@@ -1,65 +1,6 @@
 require 'artifact_tools/client'
 require 'artifact_tools/hasher'
-
-TEST_FILES = {
-  'files/hello' => {
-    'hash' => 'f572d396fae9206628714fb2ce00f72e94f2258f',
-  },
-}
-
-class Session
-  def initialize(host, user, options)
-    @host = host
-    @user = user
-    @options = options
-    @scp = MockSCP.new
-  end
-
-  def exec!(cmd)
-  end
-
-  attr_reader :scp
-end
-
-class MockSCP
-  attr_reader :download_last_remote, :upload_last_remote
-
-  def download!(remote, local)
-    @download_last_remote = remote
-  end
-
-  def upload!(local, remote)
-    @upload_last_remote = remote
-  end
-end
-
-module MockSSH
-  @start_params = {}
-
-  class << self
-    attr_reader :start_params, :session
-
-    def start(host, user, options)
-      @start_params[:host] = host
-      @start_params[:user] = user
-      @start_params[:options] = options
-      @session = Session.new(host, user, options)
-    end
-  end
-end
-
-class GetHashAlgo
-  extend ArtifactTools::Hasher
-end
-
-def mock_file_hashes(files: TEST_FILES, expect_calls: false)
-  hash = GetHashAlgo.send(:hash_algo)
-  file_hash = Struct.new(:hexdigest)
-  files.each do |file, props|
-    allow(hash).to receive(:file).with(file).and_return(file_hash.new(props['hash']))
-    expect(hash).to receive(:file).with(file).once if expect_calls
-  end
-end
+require 'helpers'
 
 describe ArtifactTools::Client do
   let(:fake_ssh) { MockSSH }
