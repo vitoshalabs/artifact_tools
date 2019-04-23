@@ -34,7 +34,7 @@ module ArtifactTools
     # @raise [HashMismatchError] In case checksum doesn't match the one stored in the config file.
     def fetch(file:nil, dest:nil, match:nil, verify: false)
       files = @config['files'].keys
-      files = file if file
+      files = [file] if file
       files.each do |entry|
         next if match and not entry.match?(match)
         entry_hash = @config['files'][entry]['hash']
