@@ -60,6 +60,8 @@ module ArtifactTools
         end
       end.parse!(arguments)
 
+      raise OptionParser::MissingArgument.new("Missing -c/--configuration option") unless options.has_key?(:config_file)
+
       options
     end
 
