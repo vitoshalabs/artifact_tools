@@ -2,6 +2,9 @@ TEST_FILES = {
   'files/hello' => {
     'hash' => 'f572d396fae9206628714fb2ce00f72e94f2258f',
   },
+  'whats/up/there/long' => {
+    'hash' => 'ecea77f26d28c9f42b6e3f6916fa67e6d2de568f',
+  },
 }
 
 class Session
