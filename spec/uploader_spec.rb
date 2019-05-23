@@ -10,6 +10,11 @@ def mock_stdout(files)
   end
 end
 
+def mock_files(files, expect_calls: false)
+  mock_file_hashes(files: files, expect_calls: expect_calls)
+  mock_stdout(files)
+end
+
 describe ArtifactTools::Uploader do
   ['artifacts.yaml', 'conf_dir/artifacts.yaml'].each do |config_file_path|
     context "uses #{config_file_path}" do
@@ -32,8 +37,7 @@ describe ArtifactTools::Uploader do
             ['file1', 'dir1/file2']
               .map { |f| config_file_dir != '.' ? "#{config_file_dir}/#{f}" : f }
           }
-          before { mock_file_hashes(files: files, expect_calls:true) }
-          before { mock_stdout(files) }
+          before { mock_files(files, expect_calls: true) }
 
           it "uploads requested files" do
             ArtifactTools::Uploader.new(config_file: config_file, files: files)
