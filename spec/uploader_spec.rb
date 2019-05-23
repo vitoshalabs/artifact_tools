@@ -50,6 +50,16 @@ describe ArtifactTools::Uploader do
             expect(FakeConfig.object.num_save).to eq 1
           end
         end
+
+        context "issues a warning if file is not relative to configuration file" do
+          let(:bad_files) { ['bad_file'] }
+
+          it do
+            next if config_file_dir == '.'
+            mock_files(bad_files, expect_calls: true)
+            expect { ArtifactTools::Uploader.new(config_file:config_file, files: bad_files, append: true) }.to raise_error(RuntimeError, /relative/)
+          end
+        end
       end
 
       describe 'self.parse' do
