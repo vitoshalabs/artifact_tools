@@ -47,10 +47,16 @@ module ArtifactTools
       store_path = file unless store_path
 
       # Convert symbols to String
-      opts = opts.map { |k,v| [k.to_s, v] }.to_h
+      opts = hash_keys_to_strings(opts)
 
       @config['files'][store_path] = opts
       @config['files'][store_path]['hash'] ||= file_hash(file)
+    end
+
+    private
+
+    def hash_keys_to_strings(h)
+      h.map { |k,v| [k.to_s, v] }.to_h
     end
   end
 end
