@@ -6,7 +6,7 @@ def keys_to_config(keys)
 end
 
 describe ArtifactTools::ConfigFile do
-  let(:correct_config) { { 'server' => 'server', 'dir' => '/hello', 'files' => {} } }
+  let(:correct_config) { { 'server' => 'server', 'dir' => '/hello', 'files' => nil } }
   describe '.from_file' do
     it "returns ConfigFile" do
       file = 'hello/world'

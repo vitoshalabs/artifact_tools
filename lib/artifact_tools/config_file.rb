@@ -49,6 +49,7 @@ module ArtifactTools
       # Convert symbols to String
       opts = hash_keys_to_strings(opts)
 
+      @config['files'] ||= {}
       @config['files'][store_path] = opts
       @config['files'][store_path]['hash'] ||= file_hash(file)
     end
