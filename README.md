@@ -142,6 +142,7 @@ files:
  - and the artifact and  artifacts versions on which it depends.
  As long as this version is relevant (e.g. has customer deployments, has open bugs not resolved, etc) we keep the version on the storage server, otherwise drop it.
 
+
 ### Configuration file
 
 The tools use configuration file where they store meta information about the stored files. The file is in YAML format and contains these first level keys:
@@ -160,6 +161,7 @@ The tools use configuration file where they store meta information about the sto
     * The value is a hash with one required key - `hash`. For now there aren't any other keys, but they could freely be extended in the future.
 
 Example:
+
 
 ```
 ---
