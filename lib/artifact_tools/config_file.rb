@@ -16,6 +16,7 @@ module ArtifactTools
     # @param config [Hash] Provide configuration. Mandatory fields are {REQUIRED_FIELDS}
     def initialize(config:)
       raise "Invalid config" unless REQUIRED_FIELDS.all? { |k| config.keys.include?(k) }
+      raise "Invalid config" unless [NilClass, Hash].any? { |klass| config['files'].is_a?(klass) }
       @config = config
     end
 

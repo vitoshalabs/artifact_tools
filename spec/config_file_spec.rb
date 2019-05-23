@@ -24,6 +24,18 @@ describe ArtifactTools::ConfigFile do
       end
     end
 
+    it "allows 'files' with null" do
+      config = correct_config.dup
+      config['files'] = nil
+      expect { ArtifactTools::ConfigFile.new(config: config) }.not_to raise_error
+    end
+
+    it "allows 'files' with {}" do
+      config = correct_config.dup
+      config['files'] = {}
+      expect { ArtifactTools::ConfigFile.new(config: config) }.not_to raise_error
+    end
+
     it "succeeds if #{ArtifactTools::ConfigFile::REQUIRED_FIELDS} are present" do
       config = keys_to_config(ArtifactTools::ConfigFile::REQUIRED_FIELDS)
       expect { ArtifactTools::ConfigFile.new(config: config) }.not_to raise_error
