@@ -32,7 +32,7 @@ module ArtifactTools
     # @param verify [Boolean] Whether to verify the checksum after the file is received. Slows the fetch.
     #
     # @raise [HashMismatchError] In case checksum doesn't match the one stored in the config file.
-    def fetch(file:nil, dest:nil, match:nil, verify: false)
+    def fetch(file:nil, dest:nil, match:nil, verify: false, force: false)
       files = @config['files'].keys
       files = [file] if file
       files.each do |entry|
@@ -41,6 +41,8 @@ module ArtifactTools
         entry_hash = @config['files'][entry]['hash']
         remote = compose_remote(entry, entry_hash)
         local = compose_local(dest, entry)
+        next if !force && local_file_matches(local, entry_hash)
+
         @ssh.scp.download!(remote, local)
         verify(entry_hash, local) if verify
       end
@@ -86,6 +88,10 @@ module ArtifactTools
       if expected_hash != actual_hash
         raise HashMismatchError, "File #{path} has hash: #{actual_hash} while it should have: #{expected_hash}"
       end
+    end
+
+    def local_file_matches(local_file, expected_hash)
+      File.exist?(local_file) && file_hash(local_file) == expected_hash
     end
   end
 end
