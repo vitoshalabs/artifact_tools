@@ -36,7 +36,8 @@ module ArtifactTools
       files = @config['files'].keys
       files = [file] if file
       files.each do |entry|
-        next if match and not entry.match?(match)
+        next if match && !entry.match?(match)
+
         entry_hash = @config['files'][entry]['hash']
         remote = compose_remote(entry, entry_hash)
         local = compose_local(dest, entry)
