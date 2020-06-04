@@ -15,11 +15,13 @@ module ArtifactTools
     # @param user [String] User to use for download connection
     # @param dest_dir [String] Where to download artifacts to
     # @param verify [Boolean] Whether to verify checksums after download.
+    # @param force [Boolean] Whether to download files even if they are already
+    #   present with the exected hash
     # @param match [Regexp] Whether to verify checksums after download.
-    def initialize(config_file:, dest_dir:, user: nil, verify: true, match: nil)
+    def initialize(config_file:, dest_dir:, user: nil, verify: true, match: nil, force: false)
       config = load_config(config_file)
       c = ArtifactTools::Client.new(config: config.config, user: user)
-      c.fetch(dest: dest_dir, verify: verify, match: match)
+      c.fetch(dest: dest_dir, verify: verify, match: match, force: force)
     end
 
     # Parse command line options to options suitable to Downloader.new
@@ -29,6 +31,7 @@ module ArtifactTools
     def self.parse(arguments)
       options = {
         verify: true,
+        force: false,
         dest_dir: '.',
       }
       arguments << '-h' if arguments.empty?
@@ -45,6 +48,10 @@ module ArtifactTools
 
         opts.on('-v', '--[no-]verify', TrueClass, "Verify hash on downloaded files. Default: #{options[:verify]}.") do |v|
           options[:verify] = v
+        end
+
+        opts.on('-f', '--[no-]force', TrueClass, "Force download of files if they are present with expected hash. Default: #{options[:force]}.") do |v|
+          options[:force] = v
         end
 
         opts.on('-u USER', '--user=USER', 'Access server with this username') do |u|
