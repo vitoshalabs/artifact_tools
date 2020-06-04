@@ -97,6 +97,30 @@ describe ArtifactTools::Client do
       end
     end
 
+    context 'files already downloaded' do
+      let(:files1) { { 'filename' => { 'hash' => '111111111' } } }
+      let(:files2) { { 'filename' => { 'hash' => '222222222' } } }
+      let(:config) { { 'files' => files1 } }
+
+      it "doesn't download the file if already present with correct hash" do
+        mock_local_file(files: files1, expect_calls: true)
+        expect { subject.fetch(force: false) }.not_to raise_error
+        expect(MockSSH.session.scp.download_last_remote).to be_nil
+      end
+
+      it 'downloads the file if already present if forced' do
+        mock_local_file(files: files1, expect_calls: false)
+        expect { subject.fetch(force: true) }.not_to raise_error
+        expect(MockSSH.session.scp.download_last_remote).to include(files1.keys.first)
+      end
+
+      it 'downloads the file if already present with incorrect hash' do
+        mock_local_file(files: files2, expect_calls: true)
+        expect { subject.fetch(force: false) }.not_to raise_error
+        expect(MockSSH.session.scp.download_last_remote).to include(files1.keys.first)
+      end
+    end
+
     context 'uses correct remote path' do
       let(:remote_dir) { '/hello/there' }
       let(:config) do

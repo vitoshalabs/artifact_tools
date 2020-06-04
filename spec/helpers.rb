@@ -62,6 +62,13 @@ def mock_file_hashes(files: TEST_FILES, expect_calls: false)
   end
 end
 
+def mock_local_file(files: TEST_FILES, expect_calls: false)
+  mock_file_hashes(files: files, expect_calls: expect_calls)
+  files.each do |file, _|
+    allow(File).to receive(:exist?).with(file).and_return(true)
+  end
+end
+
 class FakeConfig
   def self.config=(config)
     @@from_file_calls = 0
