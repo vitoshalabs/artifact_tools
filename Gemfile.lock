@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    artifact_tools (0.0.1)
+    artifact_tools (0.0.4)
       net-scp (~> 2.0)
       net-ssh (~> 5.2)
 
@@ -47,4 +47,4 @@ DEPENDENCIES
   simplecov (~> 0.16)
 
 BUNDLED WITH
-   2.0.1
+   2.1.4
