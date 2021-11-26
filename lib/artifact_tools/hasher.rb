@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 module ArtifactTools
+  # wrapper for the hashing algo used
   module Hasher
     # Calculate hash of a file
     #

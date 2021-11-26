@@ -1,0 +1,66 @@
+require: rubocop-rspec
+
+AllCops:
+  TargetRubyVersion: 2.7
+Style:
+  Enabled: true
+Style/GlobalVars:
+  Enabled: false
+Style/WordArray:
+  Enabled: false
+Style/MixinUsage:
+  Enabled: false
+Style/ParallelAssignment:
+  Enabled: false
+Style/FormatStringToken:
+  Enabled: false
+Style/For:
+  Enabled: false
+Metrics:
+  Enabled: true
+Metrics/ModuleLength:
+  Max: 500
+Metrics/BlockLength:
+  Enabled: false
+Metrics/CyclomaticComplexity:
+  Max: 20
+Metrics/LineLength:
+  Max: 120
+Metrics/MethodLength:
+  Max: 100
+Metrics/PerceivedComplexity:
+  Max: 20
+Metrics/AbcSize:
+  Max: 100
+Metrics/ClassLength:
+  Max: 500
+Layout:
+  Enabled: true
+Layout/EmptyLines:
+  Enabled: true
+Layout/SpaceAroundOperators:
+  Enabled: false
+Naming/AccessorMethodName:
+  Enabled: false
+Naming/MethodParameterName:
+  Enabled: false
+Naming/FileName:
+  Enabled: false
+RSpec/DescribeClass:
+  Enabled: false
+RSpec/MultipleDescribes:
+  Enabled: false
+RSpec/BeforeAfterAll:
+  Enabled: false
+RSpec/ExampleLength:
+  Enabled: false
+RSpec/ExampleWording:
+  Enabled: false
+RSpec/HookArgument:
+  Enabled: false
+RSpec/MultipleExpectations:
+  Enabled: false
+RSpec/InstanceVariable:
+  Enabled: false
+RSpec/ExpectInHook:
+  Enabled: false

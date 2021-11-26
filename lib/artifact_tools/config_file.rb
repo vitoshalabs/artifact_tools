@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'yaml'
 require 'artifact_tools/hasher'
 
@@ -9,14 +11,17 @@ module ArtifactTools
   class ConfigFile
     include ArtifactTools::Hasher
     attr_reader :config
-    REQUIRED_FIELDS = ['server', 'dir', 'files']
+
+    REQUIRED_FIELDS = %w[server dir files].freeze
 
     # Initialize config file
     #
     # @param config [Hash] Provide configuration. Mandatory fields are {REQUIRED_FIELDS}
     def initialize(config:)
-      raise "Invalid config" unless REQUIRED_FIELDS.all? { |k| config.keys.include?(k) }
-      raise "Invalid config" unless [NilClass, Hash].any? { |klass| config['files'].is_a?(klass) }
+      raise 'Invalid config' unless REQUIRED_FIELDS.all? { |k| config.keys.include?(k) }
+
+      raise 'Invalid config' unless [NilClass, Hash].any? { |klass| config['files'].is_a?(klass) }
+
       @config = config
     end
 
@@ -44,8 +49,8 @@ module ArtifactTools
     #
     # @note If file exists in the config with key *store_path* then its
     #   properties will be merged, where new ones will have priority.
-    def append_file(file:, store_path:nil, **opts)
-      store_path = file unless store_path
+    def append_file(file:, store_path: nil, **opts)
+      store_path ||= file
 
       # Convert symbols to String
       opts = hash_keys_to_strings(opts)
@@ -57,8 +62,8 @@ module ArtifactTools
 
     private
 
-    def hash_keys_to_strings(h)
-      h.map { |k,v| [k.to_s, v] }.to_h
+    def hash_keys_to_strings(hash)
+      hash.transform_keys(&:to_s)
     end
   end
 end

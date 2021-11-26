@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'net/ssh'
 require 'net/scp'
 require 'fileutils'
@@ -18,7 +20,7 @@ module ArtifactTools
     # @param config [Hash] Configuration
     # @param user [String] User name to connect to server with, overrides
     #   ARTIFACT_STORAGE_USER and the on stored in config
-    def initialize(config:, user:nil)
+    def initialize(config:, user: nil)
       @config = config
       user ||= ENV['ARTIFACT_STORAGE_USER'] || @config['user']
       @ssh = Net::SSH.start(@config['server'], user, non_interactive: true)
@@ -32,7 +34,7 @@ module ArtifactTools
     # @param verify [Boolean] Whether to verify the checksum after the file is received. Slows the fetch.
     #
     # @raise [HashMismatchError] In case checksum doesn't match the one stored in the config file.
-    def fetch(file:nil, dest:nil, match:nil, verify: false, force: false)
+    def fetch(file: nil, dest: nil, match: nil, verify: false, force: false)
       files = @config['files'].keys
       files = [file] if file
       files.each do |entry|
@@ -59,6 +61,7 @@ module ArtifactTools
     end
 
     private
+
     def compose_remote(file, hash)
       basename = File.basename(file)
       "#{@config['dir']}/#{hash}/#{basename}"
@@ -67,12 +70,14 @@ module ArtifactTools
     def ensure_path_exists(local)
       dirname = File.dirname(local)
       return if File.directory?(dirname)
+
       FileUtils.mkdir_p(dirname)
     end
 
     def ensure_remote_path_exists(remote)
       dirname = File.dirname(remote)
       return if File.directory?(dirname)
+
       @ssh.exec!("mkdir -p #{dirname}")
     end
 
@@ -85,9 +90,9 @@ module ArtifactTools
 
     def verify(expected_hash, path)
       actual_hash = file_hash(path)
-      if expected_hash != actual_hash
-        raise HashMismatchError, "File #{path} has hash: #{actual_hash} while it should have: #{expected_hash}"
-      end
+      return unless expected_hash != actual_hash
+
+      raise HashMismatchError, "File #{path} has hash: #{actual_hash} while it should have: #{expected_hash}"
     end
 
     def local_file_matches(local_file, expected_hash)
