@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 TEST_FILES = {
   'files/hello' => {
-    'hash' => 'f572d396fae9206628714fb2ce00f72e94f2258f',
+    'hash' => 'f572d396fae9206628714fb2ce00f72e94f2258f'
   },
   'whats/up/there/long' => {
-    'hash' => 'ecea77f26d28c9f42b6e3f6916fa67e6d2de568f',
-  },
-}
+    'hash' => 'ecea77f26d28c9f42b6e3f6916fa67e6d2de568f'
+  }
+}.freeze
 
 class Session
   def initialize(host, user, options)
@@ -15,8 +17,7 @@ class Session
     @scp = MockSCP.new
   end
 
-  def exec!(cmd)
-  end
+  def exec!(cmd); end
 
   attr_reader :scp
 end
@@ -24,11 +25,11 @@ end
 class MockSCP
   attr_reader :download_last_remote, :upload_last_remote
 
-  def download!(remote, local)
+  def download!(remote, local) # rubocop:disable Lint/UnusedMethodArgument
     @download_last_remote = remote
   end
 
-  def upload!(local, remote)
+  def upload!(local, remote) # rubocop:disable Lint/UnusedMethodArgument
     @upload_last_remote = remote
   end
 end
@@ -71,17 +72,13 @@ end
 
 class FakeConfig
   def self.config=(config)
-    @@from_file_calls = 0
-    @@config = config
+    @from_file_calls = 0
+    @config = config
   end
 
-  def self.object
-    @@object
-  end
-
-  def self.from_file(file)
-    @@from_file_calls += 1
-    @@object = self.new(@@config)
+  def self.from_file(*)
+    @from_file_calls += 1
+    @object = new(@config)
   end
 
   def initialize(config)
@@ -89,44 +86,39 @@ class FakeConfig
     @num_save = 0
   end
 
-  def save(config_file)
+  def save(config_file) # rubocop:disable Lint/UnusedMethodArgument
     @num_save += 1
   end
 
-  def append_file(file:, store_path:nil, **opts)
-    store_path = file unless store_path
+  def append_file(file:, store_path: nil, **opts)
+    store_path ||= file
     @config['files'][store_path] = opts
     @config['files'][store_path]['hash'] = '111'
   end
 
   attr_reader :config, :num_save
 
-  def self.from_file_calls
-    @@from_file_calls
+  class << self
+    attr_reader :from_file_calls, :object
   end
 end
 
 class FakeClient
-  def initialize(config:, user:nil)
-    @@put_files = []
-    @@fetch_args = []
+  def initialize(config:, user: nil) # rubocop:disable Lint/UnusedMethodArgument
+    self.class.put_files = []
+    self.class.fetch_args = []
     @config = config
   end
 
   def put(file:)
-    @@put_files << file
+    self.class.put_files << file
   end
 
   def fetch(**opts)
-    @@fetch_args << opts
+    self.class.fetch_args << opts
   end
 
-  def self.put_files
-    @@put_files
-  end
-
-  def self.fetch_args
-    @@fetch_args
+  class << self
+    attr_accessor :fetch_args, :put_files
   end
 end
-

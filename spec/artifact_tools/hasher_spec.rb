@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'artifact_tools/hasher'
 require 'tempfile'
 
@@ -14,7 +16,7 @@ def random_bytes
 end
 
 def fill_file_random_data(file)
-  bytes = random_bytes[Random.rand(1000..10000)]
+  bytes = random_bytes[Random.rand(1000..10_000)]
   file.write(bytes)
 end
 
@@ -25,10 +27,12 @@ end
 describe ArtifactTools::Hasher do
   describe 'file_hash' do
     let(:file) { Tempfile.new('hasher') }
+
     before { fill_file_random_data(file) }
+
     after { file.unlink }
 
-    it "returns correct hash" do
+    it 'returns correct hash' do
       expect(Hash.file_hash(file.path)).to eq sha1sum(file.path)
     end
   end
