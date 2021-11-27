@@ -48,8 +48,9 @@ describe ArtifactTools::ConfigFile do
   describe '#save' do
     it 'calls write to the provided file' do
       file = '/hello/world'
-      expect(File).to receive(:write).with(file, correct_config.to_yaml).once
+      allow(File).to receive(:write)
       described_class.new(config: correct_config).save(file)
+      expect(File).to have_received(:write).with(file, correct_config.to_yaml).once
     end
   end
 

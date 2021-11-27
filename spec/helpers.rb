@@ -53,21 +53,22 @@ class GetHashAlgo
   extend ArtifactTools::Hasher
 end
 
-def mock_file_hashes(files: TEST_FILES, expect_calls: false)
+def mock_file_hashes(files: TEST_FILES)
   hash = GetHashAlgo.send(:hash_algo)
   file_hash = Struct.new(:hexdigest)
   files.each do |file, props|
     props = { 'hash' => nil } if props.nil?
     allow(hash).to receive(:file).with(file).and_return(file_hash.new(props['hash']))
-    expect(hash).to receive(:file).with(file).once if expect_calls
   end
+  hash
 end
 
-def mock_local_file(files: TEST_FILES, expect_calls: false)
-  mock_file_hashes(files: files, expect_calls: expect_calls)
+def mock_local_file(files: TEST_FILES)
+  hash = mock_file_hashes(files: files)
   files.each do |file, _|
     allow(File).to receive(:exist?).with(file).and_return(true)
   end
+  hash
 end
 
 class FakeConfig

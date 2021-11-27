@@ -5,16 +5,18 @@ require 'yaml'
 require 'helpers'
 
 def mock_stdout(files)
+  out = ''
   files.each do |file|
     out = " #{file}"
     allow($stdout).to receive(:puts).with(out)
-    expect($stdout).to receive(:puts).with(out)
   end
+  out
 end
 
-def mock_files(files, expect_calls: false)
-  mock_file_hashes(files: files, expect_calls: expect_calls)
-  mock_stdout(files)
+def mock_files(files)
+  hash = mock_file_hashes(files: files)
+  out = mock_stdout(files)
+  [hash, out]
 end
 
 describe ArtifactTools::Uploader do
@@ -44,17 +46,21 @@ describe ArtifactTools::Uploader do
               .map { |f| config_file_dir != '.' ? "#{config_file_dir}/#{f}" : f }
           end
 
-          before { mock_files(files, expect_calls: true) }
+          before { @hash, @out = mock_files(files) }
 
           it 'uploads requested files' do
             described_class.new(config_file: config_file, files: files)
             expect(FakeClient.put_files).to eq files
+            files.each { |file| expect(@hash).to have_received(:file).with(file).once }
+            expect($stdout).to have_received(:puts).with(@out)
           end
 
           it 'uploads and appends requested files' do
             described_class.new(config_file: config_file, files: files, append: true)
             expect(FakeClient.put_files).to eq files
             expect(FakeConfig.object.num_save).to eq 1
+            files.each { |file| expect(@hash).to have_received(:file).with(file).once }
+            expect($stdout).to have_received(:puts).with(@out)
           end
         end
 
@@ -64,10 +70,12 @@ describe ArtifactTools::Uploader do
           it do
             next if config_file_dir == '.'
 
-            mock_files(bad_files, expect_calls: true)
+            hash, out = mock_files(bad_files)
             expect do
               described_class.new(config_file: config_file, files: bad_files, append: true)
             end.to raise_error(RuntimeError, /relative/)
+            bad_files.each { |file| expect(hash).to have_received(:file).with(file).once }
+            expect($stdout).to have_received(:puts).with(out)
           end
         end
       end

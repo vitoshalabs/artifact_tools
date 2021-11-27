@@ -9,9 +9,9 @@ end
 
 def random_bytes
   if Random.respond_to?(:bytes)
-    lambda { |x| Random.bytes(x) }
+    ->(x) { Random.bytes(x) }
   else
-    lambda { |x| Random.new.bytes(x) }
+    ->(x) { Random.new.bytes(x) }
   end
 end
 
