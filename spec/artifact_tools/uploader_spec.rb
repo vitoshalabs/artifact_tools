@@ -26,57 +26,57 @@ describe ArtifactTools::Uploader do
 
       let(:config_file_dir) { File.dirname(config_file_path) }
 
+      let(:config) { { 'server' => 'xxx', 'dir' => 'yyy', 'files' => {} } }
+
+      before do
+        stub_const('ArtifactTools::Client', FakeClient)
+        stub_const('ArtifactTools::ConfigFile', FakeConfig)
+        FakeConfig.config = config
+      end
+
       describe '.new' do
-        let(:config) { { 'server' => 'xxx', 'dir' => 'yyy', 'files' => {} } }
-
-        before do
-          stub_const('ArtifactTools::Client', FakeClient)
-          stub_const('ArtifactTools::ConfigFile', FakeConfig)
-          FakeConfig.config = config
-        end
-
         it 'reads config file' do
           described_class.new(config_file: config_file, files: [])
           expect(FakeConfig.from_file_calls).to eq 1
         end
+      end
 
-        context 'when called with files parameter' do
-          let(:files) do
-            ['file1', 'dir1/file2']
-              .map { |f| config_file_dir != '.' ? "#{config_file_dir}/#{f}" : f }
-          end
-
-          before { @hash, @out = mock_files(files) }
-
-          it 'uploads requested files' do
-            described_class.new(config_file: config_file, files: files)
-            expect(FakeClient.put_files).to eq files
-            files.each { |file| expect(@hash).to have_received(:file).with(file).once }
-            expect($stdout).to have_received(:puts).with(@out)
-          end
-
-          it 'uploads and appends requested files' do
-            described_class.new(config_file: config_file, files: files, append: true)
-            expect(FakeClient.put_files).to eq files
-            expect(FakeConfig.object.num_save).to eq 1
-            files.each { |file| expect(@hash).to have_received(:file).with(file).once }
-            expect($stdout).to have_received(:puts).with(@out)
-          end
+      context 'when called with files parameter' do
+        let(:files) do
+          ['file1', 'dir1/file2']
+            .map { |f| config_file_dir != '.' ? "#{config_file_dir}/#{f}" : f }
         end
 
-        context 'when issues a warning if file is not relative to configuration file' do
-          let(:bad_files) { ['bad_file'] }
+        before { @hash, @out = mock_files(files) }
 
-          it do
-            next if config_file_dir == '.'
+        it 'uploads requested files' do
+          described_class.new(config_file: config_file, files: files)
+          expect(FakeClient.put_files).to eq files
+          files.each { |file| expect(@hash).to have_received(:file).with(file).once }
+          expect($stdout).to have_received(:puts).with(@out)
+        end
 
-            hash, out = mock_files(bad_files)
-            expect do
-              described_class.new(config_file: config_file, files: bad_files, append: true)
-            end.to raise_error(RuntimeError, /relative/)
-            bad_files.each { |file| expect(hash).to have_received(:file).with(file).once }
-            expect($stdout).to have_received(:puts).with(out)
-          end
+        it 'uploads and appends requested files' do
+          described_class.new(config_file: config_file, files: files, append: true)
+          expect(FakeClient.put_files).to eq files
+          expect(FakeConfig.object.num_save).to eq 1
+          files.each { |file| expect(@hash).to have_received(:file).with(file).once }
+          expect($stdout).to have_received(:puts).with(@out)
+        end
+      end
+
+      context 'when issues a warning if file is not relative to configuration file' do
+        let(:bad_files) { ['bad_file'] }
+
+        it do
+          next if config_file_dir == '.'
+
+          hash, out = mock_files(bad_files)
+          expect do
+            described_class.new(config_file: config_file, files: bad_files, append: true)
+          end.to raise_error(RuntimeError, /relative/)
+          bad_files.each { |file| expect(hash).to have_received(:file).with(file).once }
+          expect($stdout).to have_received(:puts).with(out)
         end
       end
 
