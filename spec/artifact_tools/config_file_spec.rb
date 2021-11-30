@@ -87,6 +87,12 @@ describe ArtifactTools::ConfigFile do
     end
 
     it 'stores arbitrary property if provided' do
+      hash = 'something'
+      some_time = Time.now.to_s
+      config_file.append_file(file: file, hash: hash, date: some_time, 'owner': 'me')
+      expect(config_file.config['files']).to have_key(file)
+      expect(config_file.config['files'][file]['date']).to eq some_time
+      expect(config_file.config['files'][file]['owner']).to eq 'me'
     end
   end
 end
