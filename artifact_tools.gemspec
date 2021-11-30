@@ -8,6 +8,7 @@ Gem::Specification.new do |s|
   s.version = ArtifactTools::VERSION
   s.summary = 'Provides tools to manage repository artifacts.'
   s.metadata['rubygems_mfa_required'] = 'true'
+  s.license = 'MIT'
 
   s.required_ruby_version = '> 2.7.0'
 
