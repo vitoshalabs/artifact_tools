@@ -3,6 +3,7 @@
 require 'artifact_tools'
 require 'simplecov'
 require 'rspec/simplecov'
+require 'simplecov_dirty_patch'
 
 SimpleCov.minimum_coverage 90
 SimpleCov.start
