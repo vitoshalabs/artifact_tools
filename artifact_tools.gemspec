@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.name = 'artifact_tools'
   s.version = ArtifactTools::VERSION
   s.summary = 'Provides tools to manage repository artifacts.'
+  s.homepage = 'https://github.com/vitoshalabs/artifact_tools'
   s.metadata['rubygems_mfa_required'] = 'true'
   s.license = 'MIT'
 
