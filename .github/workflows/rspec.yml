@@ -1,0 +1,11 @@
+# .github/workflows/main.yaml
+name: Main
+
+on: [push]
+
+jobs:
+  vm-job:
+    runs-on: ubuntu-latest
+    
+- name: Run tests
+  run: bundle exec
