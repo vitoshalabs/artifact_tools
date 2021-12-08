@@ -1,3 +1,5 @@
+[![RSpec test run](https://github.com/vitoshalabs/artifact_tools/actions/workflows/rspec.yml/badge.svg)](https://github.com/vitoshalabs/artifact_tools/actions/workflows/rspec.yml)
+
 ### Overview
 
 This repository contains tools which help manage repository artifacts stored on our storage.
